@@ -19,17 +19,26 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
     self.view.backgroundColor = [UIColor whiteColor];
+    self.automaticallyAdjustsScrollViewInsets = false;
+    self.edgesForExtendedLayout = UIRectEdgeNone;
 }
 
 - (IBAction)clickPickDate:(UIButton *)sender {
 
     YHTDatePickViewController *datePickVC = [[YHTDatePickViewController alloc] initWithTimeFormat:YHTDateType_Minute];
-    [datePickVC showType:YHTViewType_Alert parentViewController:self completion:^(NSDate *date) {
+//    [datePickVC showType:YHTViewType_Alert parentViewController:self completion:^(NSDate *date) {
+//
+//        NSDateFormatter *format = [[NSDateFormatter alloc] init];
+//        format.dateFormat = @"yyyy-MM-dd HH:mm";
+//        NSLog(@"%@",[format stringFromDate:date]);
+//    }];
+    [datePickVC showType:YHTViewType_Present parentViewController:self completion:^(NSDate *date) {
 
         NSDateFormatter *format = [[NSDateFormatter alloc] init];
         format.dateFormat = @"yyyy-MM-dd HH:mm";
         NSLog(@"%@",[format stringFromDate:date]);
     }];
+
 }
 
 @end

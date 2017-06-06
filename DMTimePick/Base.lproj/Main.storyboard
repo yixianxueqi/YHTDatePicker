@@ -18,11 +18,11 @@
                         <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="618"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="37i-C1-IuH">
-                                <rect key="frame" x="157" y="319" width="61" height="30"/>
+                                <rect key="frame" x="157" y="294" width="61" height="30"/>
                                 <state key="normal" title="pickDate"/>
                                 <connections>
                                     <action selector="clickPickDate:" destination="BYZ-38-t0r" eventType="touchUpInside" id="95Y-LI-FI5"/>
@@ -66,7 +66,7 @@
             <objects>
                 <tabBarController automaticallyAdjustsScrollViewInsets="NO" id="kIy-A3-0EW" sceneMemberID="viewController">
                     <toolbarItems/>
-                    <tabBar key="tabBar" contentMode="scaleToFill" id="uyP-bS-LKb">
+                    <tabBar key="tabBar" contentMode="scaleToFill" translucent="NO" id="uyP-bS-LKb">
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     </tabBar>

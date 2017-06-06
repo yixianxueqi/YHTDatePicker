@@ -15,6 +15,8 @@ static NSTimeInterval const Day_Seconds = 86400;
 static NSTimeInterval const Default_Future_Year = 10957;
 //视图比例
 static CGFloat const scale = 0.8;
+//视图容器在垂直方向的偏移量
+static CGFloat const yOffset = 50;
 
 #ifndef kScreenSize
     #define kScreenSize [UIScreen mainScreen].bounds.size
@@ -35,6 +37,7 @@ static CGFloat const scale = 0.8;
 }
 @property (nonatomic, strong) UIPickerView *pickView;
 @property (nonatomic, assign) YHTDateType dateType;
+@property (nonatomic, assign) YHTViewType showType;
 @property (nonatomic, copy) void(^completionBlock)(NSDate *date);
 @property (nonatomic, strong) UIView *contentView;
 @property (nonatomic, strong, readwrite) id<YHTDateDataSource> delegate;
@@ -63,7 +66,6 @@ static CGFloat const scale = 0.8;
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    self.view.backgroundColor = [[UIColor clearColor] colorWithAlphaComponent:0.3];
     [self.contentView addSubview:self.pickView];
     [self.view addSubview:self.contentView];
 }
@@ -94,6 +96,7 @@ static CGFloat const scale = 0.8;
     [parentViewController.view addSubview:self.view];
     self.view.frame = parentViewController.view.bounds;
 
+    self.showType = type;
     self.completionBlock = completionBlock;
     if (type == YHTViewType_Alert) {
         [self alertShow];
@@ -109,8 +112,10 @@ static CGFloat const scale = 0.8;
  */
 - (void)alertShow {
 
+    self.view.backgroundColor = [[UIColor clearColor] colorWithAlphaComponent:0.3];
     [self deployAlertContentView];
-    self.pickView.frame = CGRectMake(0, 0, self.contentView.bounds.size.width, self.contentView.bounds.size.height * 0.77);
+    self.pickView.frame = CGRectMake(0, 0, self.contentView.bounds.size.width, self.contentView.bounds.size.height * scale);
+    //按钮
     UIButton *cancelBtn = [self quickGetButtonWith:@"取 消" color:[UIColor redColor] selector:@selector(cancelBtnClick:)];
     UIButton *chooseBtn = [self quickGetButtonWith:@"确 认" color:RGBA(28, 162, 248, 1) selector:@selector(chooseBtnClick:)];
     [self.contentView addSubview:cancelBtn];
@@ -128,6 +133,37 @@ static CGFloat const scale = 0.8;
  */
 - (void)presentShow {
 
+    self.view.backgroundColor = [[UIColor clearColor] colorWithAlphaComponent:0];
+    //视图容器
+    CGFloat width = kScreenSize.width;
+    CGFloat height = kScreenSize.height * 0.5;
+    CGPoint center = CGPointMake(width * 0.5, kScreenSize.height + height * 0.5);
+    self.contentView.bounds = CGRectMake(0, 0, width, height);
+    self.contentView.center = center;
+    //分割线
+    CALayer *layer = [[CALayer alloc] init];
+    layer.frame = CGRectMake(0, 0, width, 1);
+    layer.backgroundColor = [UIColor lightGrayColor].CGColor;
+    [self.contentView.layer addSublayer:layer];
+    //按钮
+    UIButton *cancelBtn = [self quickGetButtonWith:@"取消" color:[UIColor clearColor] selector:@selector(cancelBtnClick:)];
+    [cancelBtn setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
+    UIButton *chooseBtn = [self quickGetButtonWith:@"确认" color:[UIColor clearColor] selector:@selector(chooseBtnClick:)];
+    [chooseBtn setTitleColor:RGBA(28, 162, 248, 1) forState:UIControlStateNormal];
+    CGFloat btnHeight = 35;
+    [self.contentView addSubview:cancelBtn];
+    [self.contentView addSubview:chooseBtn];
+    cancelBtn.frame = CGRectMake(20, 8, 100, btnHeight);
+    chooseBtn.frame = CGRectMake(width - 20 - 100, 8, 100, btnHeight);
+    //pickView
+    self.pickView.frame = CGRectMake(0, btnHeight, width, height - btnHeight);
+    //出现的动画效果
+    [UIView animateWithDuration:0.25 animations:^{
+        self.view.backgroundColor = [[UIColor clearColor] colorWithAlphaComponent:0.3];
+        CGFloat centerX = width * 0.5;
+        CGFloat centerY = self.view.bounds.size.height - height * 0.5;
+        self.contentView.center = CGPointMake(centerX, centerY);
+    }];
 }
 
 
@@ -137,9 +173,23 @@ static CGFloat const scale = 0.8;
 - (void)hide {
 
     NSLog(@"%s",__func__);
-    [self willMoveToParentViewController:nil];
-    [self removeFromParentViewController];
-    [self.view removeFromSuperview];
+    if (YHTViewType_Present == self.showType) {
+        //从底部弹出则有动画效果
+        [UIView animateWithDuration:0.25 animations:^{
+            CGFloat centerX = kScreenSize.width * 0.5;
+            CGFloat centerY = kScreenSize.height + self.contentView.bounds.size.height * 0.5;
+            self.contentView.center = CGPointMake(centerX, centerY);
+            self.view.backgroundColor = [[UIColor clearColor] colorWithAlphaComponent:0];
+        } completion:^(BOOL finished) {
+            [self willMoveToParentViewController:nil];
+            [self removeFromParentViewController];
+            [self.view removeFromSuperview];
+        }];
+    } else {
+        [self willMoveToParentViewController:nil];
+        [self removeFromParentViewController];
+        [self.view removeFromSuperview];
+    }
 }
 
 /**
@@ -162,6 +212,7 @@ static CGFloat const scale = 0.8;
 - (void)chooseBtnClick:(UIButton *)btn {
 
     NSLog(@"%s",__func__);
+    [self hide];
 }
 
 
@@ -171,7 +222,7 @@ static CGFloat const scale = 0.8;
 - (void)deployAlertContentView {
 
     CGPoint parentCenter = self.parentViewController.view.center;
-    CGPoint center = CGPointMake(parentCenter.x, parentCenter.y);
+    CGPoint center = CGPointMake(parentCenter.x, parentCenter.y - yOffset);
     CGFloat width = kScreenSize.width * scale;
     CGFloat height = width * scale;
     self.contentView.bounds = CGRectMake(0, 0, width, height);
