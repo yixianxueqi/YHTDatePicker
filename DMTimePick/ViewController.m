@@ -7,6 +7,7 @@
 //
 
 #import "ViewController.h"
+#import "YHTDatePickViewController.h"
 
 @interface ViewController ()
 
@@ -17,7 +18,18 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
+    self.view.backgroundColor = [UIColor whiteColor];
 }
 
+- (IBAction)clickPickDate:(UIButton *)sender {
+
+    YHTDatePickViewController *datePickVC = [[YHTDatePickViewController alloc] initWithTimeFormat:YHTDateType_Minute];
+    [datePickVC showType:YHTViewType_Alert parentViewController:self completion:^(NSDate *date) {
+
+        NSDateFormatter *format = [[NSDateFormatter alloc] init];
+        format.dateFormat = @"yyyy-MM-dd HH:mm";
+        NSLog(@"%@",[format stringFromDate:date]);
+    }];
+}
 
 @end
