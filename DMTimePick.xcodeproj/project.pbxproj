@@ -10,6 +10,7 @@
 		DB1045261EE646A700BF86A0 /* YHTDatePickViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DB1045251EE646A700BF86A0 /* YHTDatePickViewController.m */; };
 		DB1045291EE6549600BF86A0 /* YHTDatePickViewController+YHTPickViewDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = DB1045281EE6549600BF86A0 /* YHTDatePickViewController+YHTPickViewDelegate.m */; };
 		DB1045331EE6976900BF86A0 /* YHTDateCalculate.m in Sources */ = {isa = PBXBuildFile; fileRef = DB1045321EE6976900BF86A0 /* YHTDateCalculate.m */; };
+		DB1045381EE7EF9B00BF86A0 /* DemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DB1045371EE7EF9B00BF86A0 /* DemoViewController.m */; };
 		DBDEDD821EE643B5009296CA /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = DBDEDD811EE643B5009296CA /* main.m */; };
 		DBDEDD851EE643B5009296CA /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = DBDEDD841EE643B5009296CA /* AppDelegate.m */; };
 		DBDEDD881EE643B5009296CA /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DBDEDD871EE643B5009296CA /* ViewController.m */; };
@@ -25,6 +26,8 @@
 		DB1045281EE6549600BF86A0 /* YHTDatePickViewController+YHTPickViewDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "YHTDatePickViewController+YHTPickViewDelegate.m"; sourceTree = "<group>"; };
 		DB1045311EE6976900BF86A0 /* YHTDateCalculate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YHTDateCalculate.h; sourceTree = "<group>"; };
 		DB1045321EE6976900BF86A0 /* YHTDateCalculate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YHTDateCalculate.m; sourceTree = "<group>"; };
+		DB1045361EE7EF9B00BF86A0 /* DemoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DemoViewController.h; sourceTree = "<group>"; };
+		DB1045371EE7EF9B00BF86A0 /* DemoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DemoViewController.m; sourceTree = "<group>"; };
 		DBDEDD7D1EE643B5009296CA /* DMTimePick.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DMTimePick.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DBDEDD811EE643B5009296CA /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		DBDEDD831EE643B5009296CA /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -90,6 +93,8 @@
 				DBDEDD8E1EE643B5009296CA /* LaunchScreen.storyboard */,
 				DBDEDD911EE643B5009296CA /* Info.plist */,
 				DBDEDD801EE643B5009296CA /* Supporting Files */,
+				DB1045361EE7EF9B00BF86A0 /* DemoViewController.h */,
+				DB1045371EE7EF9B00BF86A0 /* DemoViewController.m */,
 			);
 			path = DMTimePick;
 			sourceTree = "<group>";
@@ -179,6 +184,7 @@
 				DB1045331EE6976900BF86A0 /* YHTDateCalculate.m in Sources */,
 				DBDEDD821EE643B5009296CA /* main.m in Sources */,
 				DB1045261EE646A700BF86A0 /* YHTDatePickViewController.m in Sources */,
+				DB1045381EE7EF9B00BF86A0 /* DemoViewController.m in Sources */,
 				DB1045291EE6549600BF86A0 /* YHTDatePickViewController+YHTPickViewDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -47,17 +47,15 @@
 
 #pragma mark - UIPickerViewDelegate
 
-//- (CGFloat)pickerView:(UIPickerView *)pickerView widthForComponent:(NSInteger)component {
-//
-//    CGFloat width = 0;
-//    NSInteger componentCount = pickerView.numberOfComponents;
-//    if (component == 0) {
-//        width = [self calculateComponentsWithCount:componentCount] * 2;
-//    } else {
-//        width = [self calculateComponentsWithCount:componentCount];
-//    }
-//    return width;
-//}
+- (CGFloat)pickerView:(UIPickerView *)pickerView widthForComponent:(NSInteger)component {
+
+    CGFloat width = pickerView.bounds.size.width / 12;
+    if (component == 0) {
+        return width * 3;
+    } else {
+        return width * 2;
+    }
+}
 
 - (CGFloat)pickerView:(UIPickerView *)pickerView rowHeightForComponent:(NSInteger)component {
 
@@ -89,12 +87,10 @@
 - (nullable NSAttributedString *)pickerView:(UIPickerView *)pickerView attributedTitleForRow:(NSInteger)row forComponent:(NSInteger)component {
 
     NSMutableAttributedString *title = [[NSMutableAttributedString alloc] init];
-    NSDictionary *attribut = @{NSFontAttributeName: [UIFont systemFontOfSize:21], NSForegroundColorAttributeName: [UIColor blackColor]};
-    NSDictionary *identifyAttr = @{NSFontAttributeName: [UIFont systemFontOfSize:11], NSForegroundColorAttributeName: [UIColor lightTextColor]};
+    NSDictionary *attribut = @{NSFontAttributeName: [UIFont systemFontOfSize:21], NSForegroundColorAttributeName: self.tintColor};
     switch (component) {
         case 0:
             [title appendAttributedString:[[NSAttributedString alloc] initWithString:[self yearStrWithRow:row] attributes:attribut]];
-//            [title appendAttributedString:[[NSAttributedString alloc] initWithString:@"年" attributes:identifyAttr]];
             break;
         case 1:
             [title appendAttributedString:[[NSAttributedString alloc] initWithString:[self monthStrWithRow:row] attributes:attribut]];

@@ -1,40 +1,35 @@
 //
-//  ViewController.m
+//  DemoViewController.m
 //  DMTimePick
 //
-//  Created by 君若见故 on 2017/6/6.
+//  Created by 君若见故 on 2017/6/7.
 //  Copyright © 2017年 isoftstone. All rights reserved.
 //
 
-#import "ViewController.h"
+#import "DemoViewController.h"
 #import "YHTDatePickViewController.h"
 
-@interface ViewController ()
+@interface DemoViewController ()
 
 @property (weak, nonatomic) IBOutlet UITextField *alertTextField;
 @property (weak, nonatomic) IBOutlet UITextField *presentTextField;
 
-@property (nonatomic, strong) NSDate *minDate;
-@property (nonatomic, strong) NSDate *maxDate;
 
 @end
 
-@implementation ViewController
+@implementation DemoViewController
 
 #pragma mark - life cycle
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view, typically from a nib.
+    // Do any additional setup after loading the view.
     self.view.backgroundColor = [UIColor whiteColor];
     self.automaticallyAdjustsScrollViewInsets = false;
     self.edgesForExtendedLayout = UIRectEdgeNone;
-
-    //initialize
-    self.minDate = [self getDateFromDateStr:@"2000-08-31 23:59"];
-    self.maxDate = [self getDateFromDateStr:@"2020-12-31 00:00"];
 }
 
 #pragma mark - click
+
 // 弹窗选择时间
 - (IBAction)clickPickDateAlert:(UIButton *)sender {
 
@@ -53,12 +48,7 @@
 //底部弹窗选择时间
 - (IBAction)clickDatePresent:(UIButton *)sender {
 
-    YHTDatePickViewController *datePickVC = [[YHTDatePickViewController alloc] initWithTimeFormat:YHTDateType_Day];
-    //配置项
-    datePickVC.minDate = self.minDate;
-    datePickVC.maxDate = self.maxDate;
-    datePickVC.tintColor = [UIColor orangeColor];
-
+    YHTDatePickViewController *datePickVC = [[YHTDatePickViewController alloc] initWithTimeFormat:YHTDateType_Minute];
     __weak typeof(self) weakSelf = self;
     [datePickVC showType:YHTViewType_Present parentViewController:self completion:^(NSDate *date) {
 
@@ -69,23 +59,6 @@
         weakSelf.presentTextField.text = dateStr;
     }];
 }
-
-#pragma mark - private
-
-
-/**
- 根据时间字符串获取NSDate对象
-
- @param dateStr 时间字符串
- @return NSDate
- */
-- (NSDate *)getDateFromDateStr:(NSString *)dateStr {
-
-    NSDateFormatter *format = [[NSDateFormatter alloc] init];
-    format.dateFormat = @"yyyy-MM-dd HH:mm";
-    return [format dateFromString:dateStr];
-}
-
 
 
 @end

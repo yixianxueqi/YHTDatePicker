@@ -59,6 +59,8 @@ typedef NS_ENUM(NSUInteger, YHTViewType) {
 @property (nonatomic, strong) NSDate *maxDate;
 //设置当前选择的默认时间，不设则默认此刻且大于等于最小时间
 @property (nonatomic, strong) NSDate *currentDate;
+//设置日期选项颜色
+@property (nonatomic, strong) UIColor *tintColor;
 //设置时间代理
 @property (nonatomic, strong, readonly) id<YHTDateDataSource> delegate;
 

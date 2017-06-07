@@ -51,6 +51,7 @@ static CGFloat const YOffset = 50;
     self.minDate = [NSDate dateWithTimeIntervalSince1970:0];
     self.maxDate = [NSDate dateWithTimeIntervalSinceNow:Day_Seconds * Default_Future_Year];
     self.currentDate = [NSDate date];
+    self.tintColor = [UIColor blackColor];
     self.delegate = [[YHTDateCalculate alloc] init];
     return self;
 }
@@ -207,6 +208,7 @@ static CGFloat const YOffset = 50;
     NSLog(@"%s",__func__);
     NSInteger componentCount = [self.pickView numberOfComponents];
     NSMutableString *dateStr = [NSMutableString string];
+    NSMutableString *formatStr = [NSMutableString string];
     //此处根据选择拼接日期字符串，然后转化为NSDate对象
     if (componentCount > 0) {
         //年
@@ -215,30 +217,35 @@ static CGFloat const YOffset = 50;
          NSString *yearStr = [self.delegate getYearListWithMinDate:self.minDate maxDate:self.maxDate][yearIndex];
             [dateStr appendString:yearStr];
         }
+        [formatStr appendString:@"yyyy"];
     }
     if (componentCount > 1) {
         //月
         NSString *monthStr = [NSString stringWithFormat:@"%ld",[self.pickView selectedRowInComponent:1]+1];
         [dateStr appendString:[NSString stringWithFormat:@"-%@", monthStr]];
+        [formatStr appendString:@"-MM"];
     }
     if (componentCount > 2) {
         //日
         NSString *dayStr = [NSString stringWithFormat:@"%ld",[self.pickView selectedRowInComponent:2]+1];
         [dateStr appendString:[NSString stringWithFormat:@"-%@", dayStr]];
+        [formatStr appendString:@"-dd"];
     }
     if (componentCount > 3) {
         //时
         NSString *hourStr = [NSString stringWithFormat:@"%ld",[self.pickView selectedRowInComponent:3]];
         [dateStr appendString:[NSString stringWithFormat:@" %@", hourStr]];
+        [formatStr appendString:@" HH"];
     }
     if (componentCount > 4) {
         //分
         NSString *minuteStr = [NSString stringWithFormat:@"%ld",[self.pickView selectedRowInComponent:4]];
         [dateStr appendString:[NSString stringWithFormat:@":%@", minuteStr]];
+        [formatStr appendString:@":mm"];
     }
 
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-    formatter.dateFormat = @"yyyy-MM-dd HH:mm";
+    formatter.dateFormat = formatStr;
     if (self.completionBlock) {
         self.completionBlock([formatter dateFromString:dateStr]);
     }
