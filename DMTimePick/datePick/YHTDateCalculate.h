@@ -12,7 +12,7 @@
 
 @optional
 
-- (NSArray *)getYearListWithDate:(NSDate *)date;
+- (NSArray *)getYearListWithMinDate:(NSDate *)minDate maxDate:(NSDate *)maxDate;
 - (NSArray *)getMonthListWithDate:(NSDate *)date;
 - (NSArray *)getDayListWithDate:(NSDate *)date;
 - (NSArray *)getHourListWithDate:(NSDate *)date;
@@ -21,5 +21,7 @@
 @end
 
 @interface YHTDateCalculate : NSObject<YHTDateDataSource>
+
+
 
 @end

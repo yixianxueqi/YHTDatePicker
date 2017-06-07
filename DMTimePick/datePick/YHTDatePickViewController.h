@@ -41,7 +41,16 @@ typedef NS_ENUM(NSUInteger, YHTViewType) {
 };
 
 @interface YHTDatePickViewController : UIViewController
-
+{
+    //用设置标志位，判断协议是否实现可选的方法
+    struct {
+        unsigned int yearFlag         :1;
+        unsigned int monthFlag        :1;
+        unsigned int dayFlag          :1;
+        unsigned int hourFlag         :1;
+        unsigned int minuteFlag       :1;
+    } _delegateFlags;
+}
 //时区
 @property (nonatomic, strong) NSTimeZone *timeZone;
 //最小选择时间，不设置则最小1970年

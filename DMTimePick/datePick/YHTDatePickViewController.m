@@ -14,9 +14,9 @@ static NSTimeInterval const Day_Seconds = 86400;
 //未来30年的天数
 static NSTimeInterval const Default_Future_Year = 10957;
 //视图比例
-static CGFloat const scale = 0.8;
+static CGFloat const Scale = 0.8;
 //视图容器在垂直方向的偏移量
-static CGFloat const yOffset = 50;
+static CGFloat const YOffset = 50;
 
 #ifndef kScreenSize
     #define kScreenSize [UIScreen mainScreen].bounds.size
@@ -25,16 +25,7 @@ static CGFloat const yOffset = 50;
 #define RGBA(r,g,b,a) [UIColor colorWithRed:(r)/256.0 green:(g)/256.0 blue:(b)/256.0 alpha:(a)]
 
 @interface YHTDatePickViewController ()
-{
-    //用设置标志位，判断协议是否实现可选的方法
-    struct {
-        unsigned int yearFlag         :1;
-        unsigned int monthFlag        :1;
-        unsigned int dayFlag          :1;
-        unsigned int hourFlag         :1;
-        unsigned int minuteFlag       :1;
-    } _delegateFlags;
-}
+
 @property (nonatomic, strong) UIPickerView *pickView;
 @property (nonatomic, assign) YHTDateType dateType;
 @property (nonatomic, assign) YHTViewType showType;
@@ -59,6 +50,7 @@ static CGFloat const yOffset = 50;
     self.timeZone = [NSTimeZone defaultTimeZone];
     self.minDate = [NSDate dateWithTimeIntervalSince1970:0];
     self.maxDate = [NSDate dateWithTimeIntervalSinceNow:Day_Seconds * Default_Future_Year];
+    self.currentDate = [NSDate date];
     self.delegate = [[YHTDateCalculate alloc] init];
     return self;
 }
@@ -103,6 +95,7 @@ static CGFloat const yOffset = 50;
     } else {
         [self presentShow];
     }
+    [self setDefaultSelectDate];
 }
 
 #pragma mark - private
@@ -114,13 +107,13 @@ static CGFloat const yOffset = 50;
 
     self.view.backgroundColor = [[UIColor clearColor] colorWithAlphaComponent:0.3];
     [self deployAlertContentView];
-    self.pickView.frame = CGRectMake(0, 0, self.contentView.bounds.size.width, self.contentView.bounds.size.height * scale);
+    self.pickView.frame = CGRectMake(0, 0, self.contentView.bounds.size.width, self.contentView.bounds.size.height * Scale);
     //按钮
     UIButton *cancelBtn = [self quickGetButtonWith:@"取 消" color:[UIColor redColor] selector:@selector(cancelBtnClick:)];
     UIButton *chooseBtn = [self quickGetButtonWith:@"确 认" color:RGBA(28, 162, 248, 1) selector:@selector(chooseBtnClick:)];
     [self.contentView addSubview:cancelBtn];
     [self.contentView addSubview:chooseBtn];
-    CGFloat btnHeight = self.contentView.bounds.size.height * (1 - scale);
+    CGFloat btnHeight = self.contentView.bounds.size.height * (1 - Scale);
     CGFloat btnWidth = self.contentView.bounds.size.width * 0.5;
     CGFloat btnY = self.contentView.bounds.size.height - btnHeight;
     cancelBtn.frame = CGRectMake(0, btnY, btnWidth, btnHeight);
@@ -212,6 +205,43 @@ static CGFloat const yOffset = 50;
 - (void)chooseBtnClick:(UIButton *)btn {
 
     NSLog(@"%s",__func__);
+    NSInteger componentCount = [self.pickView numberOfComponents];
+    NSMutableString *dateStr = [NSMutableString string];
+    //此处根据选择拼接日期字符串，然后转化为NSDate对象
+    if (componentCount > 0) {
+        //年
+        NSInteger yearIndex = [self.pickView selectedRowInComponent:0];
+        if (_delegateFlags.yearFlag) {
+         NSString *yearStr = [self.delegate getYearListWithMinDate:self.minDate maxDate:self.maxDate][yearIndex];
+            [dateStr appendString:yearStr];
+        }
+    }
+    if (componentCount > 1) {
+        //月
+        NSString *monthStr = [NSString stringWithFormat:@"%ld",[self.pickView selectedRowInComponent:1]+1];
+        [dateStr appendString:[NSString stringWithFormat:@"-%@", monthStr]];
+    }
+    if (componentCount > 2) {
+        //日
+        NSString *dayStr = [NSString stringWithFormat:@"%ld",[self.pickView selectedRowInComponent:2]+1];
+        [dateStr appendString:[NSString stringWithFormat:@"-%@", dayStr]];
+    }
+    if (componentCount > 3) {
+        //时
+        NSString *hourStr = [NSString stringWithFormat:@"%ld",[self.pickView selectedRowInComponent:3]];
+        [dateStr appendString:[NSString stringWithFormat:@" %@", hourStr]];
+    }
+    if (componentCount > 4) {
+        //分
+        NSString *minuteStr = [NSString stringWithFormat:@"%ld",[self.pickView selectedRowInComponent:4]];
+        [dateStr appendString:[NSString stringWithFormat:@":%@", minuteStr]];
+    }
+
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    formatter.dateFormat = @"yyyy-MM-dd HH:mm";
+    if (self.completionBlock) {
+        self.completionBlock([formatter dateFromString:dateStr]);
+    }
     [self hide];
 }
 
@@ -222,9 +252,9 @@ static CGFloat const yOffset = 50;
 - (void)deployAlertContentView {
 
     CGPoint parentCenter = self.parentViewController.view.center;
-    CGPoint center = CGPointMake(parentCenter.x, parentCenter.y - yOffset);
-    CGFloat width = kScreenSize.width * scale;
-    CGFloat height = width * scale;
+    CGPoint center = CGPointMake(parentCenter.x, parentCenter.y - YOffset);
+    CGFloat width = kScreenSize.width * Scale;
+    CGFloat height = width * Scale;
     self.contentView.bounds = CGRectMake(0, 0, width, height);
     self.contentView.center = center;
     //设圆角，contentView只有左上和右上为圆角，其它为直角
@@ -279,7 +309,7 @@ static CGFloat const yOffset = 50;
 
     _delegate = delegate;
     //协议实现情况判断
-    _delegateFlags.yearFlag = [delegate respondsToSelector:@selector(getYearListWithDate:)];
+    _delegateFlags.yearFlag = [delegate respondsToSelector:@selector(getYearListWithMinDate:maxDate:)];
     _delegateFlags.monthFlag = [delegate respondsToSelector:@selector(getMonthListWithDate:)];
     _delegateFlags.dayFlag = [delegate respondsToSelector:@selector(getDayListWithDate:)];
     _delegateFlags.hourFlag = [delegate respondsToSelector:@selector(getHourListWithDate:)];

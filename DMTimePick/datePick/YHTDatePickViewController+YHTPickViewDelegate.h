@@ -10,4 +10,10 @@
 
 @interface YHTDatePickViewController (YHTPickViewDelegate)<UIPickerViewDelegate, UIPickerViewDataSource>
 
+
+/**
+ 设置默认选中的日期
+ */
+- (void)setDefaultSelectDate;
+
 @end
