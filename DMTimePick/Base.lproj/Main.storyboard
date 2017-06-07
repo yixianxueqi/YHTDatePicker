@@ -69,7 +69,7 @@
                     <navigationItem key="navigationItem" title="YHTDatePick" id="PGR-Vt-guO">
                         <barButtonItem key="rightBarButtonItem" title="push" id="Ryk-P5-Nly">
                             <connections>
-                                <segue destination="LbQ-ko-1QE" kind="push" id="kkY-WW-sqT"/>
+                                <segue destination="LbQ-ko-1QE" kind="push" identifier="push" id="kkY-WW-sqT"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -163,7 +163,7 @@
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="3lW-3x-B0x" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" systemItem="favorites" id="uEd-1N-1Fe"/>
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" translucent="NO" id="p0u-WX-k0g">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" translucent="NO" id="p0u-WX-k0g">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>

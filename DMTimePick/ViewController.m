@@ -8,6 +8,7 @@
 
 #import "ViewController.h"
 #import "YHTDatePickViewController.h"
+#import "DemoViewController.h"
 
 @interface ViewController ()
 
@@ -32,6 +33,14 @@
     //initialize
     self.minDate = [self getDateFromDateStr:@"2000-08-31 23:59"];
     self.maxDate = [self getDateFromDateStr:@"2020-12-31 00:00"];
+}
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+
+    if([segue.identifier isEqualToString:@"push"]) {
+        DemoViewController *demoVC = segue.destinationViewController;
+        demoVC.hidesBottomBarWhenPushed = true;
+    }
 }
 
 #pragma mark - click
