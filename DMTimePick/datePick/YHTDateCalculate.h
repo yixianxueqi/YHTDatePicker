@@ -8,20 +8,30 @@
 
 #import <Foundation/Foundation.h>
 
-@protocol YHTDateDataSource <NSObject>
+//类型标示符
+//向上取
+extern int const YHTMINTYEPE;
+//默认
+extern int const YHTNORMALTYPE;
+//向下取
+extern int const YHTMAXTYPE;
 
-@optional
 
-- (NSArray *)getYearListWithMinDate:(NSDate *)minDate maxDate:(NSDate *)maxDate;
-- (NSArray *)getMonthListWithDate:(NSDate *)date;
-- (NSArray *)getDayListWithDate:(NSDate *)date;
-- (NSArray *)getHourListWithDate:(NSDate *)date;
-- (NSArray *)getMinuteListWithDate:(NSDate *)date;
+@interface YHTDateScope : NSObject
+
+@property (nonatomic, assign) NSInteger start;
+@property (nonatomic, assign) NSInteger length;
+
+- (instancetype)initWithStart:(NSInteger)start length:(NSInteger)length;
 
 @end
 
-@interface YHTDateCalculate : NSObject<YHTDateDataSource>
+@interface YHTDateCalculate : NSObject
 
-
+- (YHTDateScope *)getYearListWithMinDate:(NSDate *)minDate maxDate:(NSDate *)maxDate;
+- (YHTDateScope *)getMonthListWithDate:(NSDate *)date type:(NSInteger)type;
+- (YHTDateScope *)getDayListWithDate:(NSDate *)date type:(NSInteger)type;
+- (YHTDateScope *)getHourListWithDate:(NSDate *)date type:(NSInteger)type;
+- (YHTDateScope *)getMinuteListWithDate:(NSDate *)date type:(NSInteger)type;
 
 @end

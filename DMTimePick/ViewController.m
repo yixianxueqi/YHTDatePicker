@@ -33,6 +33,7 @@
     //initialize
     self.minDate = [self getDateFromDateStr:@"2000-08-31 23:59"];
     self.maxDate = [self getDateFromDateStr:@"2020-12-31 00:00"];
+
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
@@ -62,7 +63,7 @@
 //底部弹窗选择时间
 - (IBAction)clickDatePresent:(UIButton *)sender {
 
-    YHTDatePickViewController *datePickVC = [[YHTDatePickViewController alloc] initWithTimeFormat:YHTDateType_Day];
+    YHTDatePickViewController *datePickVC = [[YHTDatePickViewController alloc] initWithTimeFormat:YHTDateType_Minute];
     //配置项
     datePickVC.minDate = self.minDate;
     datePickVC.maxDate = self.maxDate;

@@ -7,6 +7,7 @@
 //
 
 #import "YHTDatePickViewController.h"
+#import "YHTDateCalculate.h"
 #import "YHTDatePickViewController+YHTPickViewDelegate.h"
 
 //一天的秒数
@@ -31,7 +32,7 @@ static CGFloat const YOffset = 50;
 @property (nonatomic, assign) YHTViewType showType;
 @property (nonatomic, copy) void(^completionBlock)(NSDate *date);
 @property (nonatomic, strong) UIView *contentView;
-@property (nonatomic, strong, readwrite) id<YHTDateDataSource> delegate;
+@property (nonatomic, strong) YHTDateCalculate *dateCalculate;
 
 @end
 
@@ -52,7 +53,7 @@ static CGFloat const YOffset = 50;
     self.maxDate = [NSDate dateWithTimeIntervalSinceNow:Day_Seconds * Default_Future_Year];
     self.currentDate = [NSDate date];
     self.tintColor = [UIColor blackColor];
-    self.delegate = [[YHTDateCalculate alloc] init];
+    self.dateCalculate = [[YHTDateCalculate alloc] init];
     return self;
 }
 
@@ -205,42 +206,34 @@ static CGFloat const YOffset = 50;
  */
 - (void)chooseBtnClick:(UIButton *)btn {
 
-    NSLog(@"%s",__func__);
-    NSInteger componentCount = [self.pickView numberOfComponents];
     NSMutableString *dateStr = [NSMutableString string];
     NSMutableString *formatStr = [NSMutableString string];
+    NSArray *list = [self getSelectItem];
+    NSInteger count = list.count;
     //此处根据选择拼接日期字符串，然后转化为NSDate对象
-    if (componentCount > 0) {
+    if (count > 0) {
         //年
-        NSInteger yearIndex = [self.pickView selectedRowInComponent:0];
-        if (_delegateFlags.yearFlag) {
-         NSString *yearStr = [self.delegate getYearListWithMinDate:self.minDate maxDate:self.maxDate][yearIndex];
-            [dateStr appendString:yearStr];
-        }
+        [dateStr appendString:list[0]];
         [formatStr appendString:@"yyyy"];
     }
-    if (componentCount > 1) {
+    if (count > 1) {
         //月
-        NSString *monthStr = [NSString stringWithFormat:@"%ld",[self.pickView selectedRowInComponent:1]+1];
-        [dateStr appendString:[NSString stringWithFormat:@"-%@", monthStr]];
+        [dateStr appendString:[NSString stringWithFormat:@"-%@", list[1]]];
         [formatStr appendString:@"-MM"];
     }
-    if (componentCount > 2) {
+    if (count > 2) {
         //日
-        NSString *dayStr = [NSString stringWithFormat:@"%ld",[self.pickView selectedRowInComponent:2]+1];
-        [dateStr appendString:[NSString stringWithFormat:@"-%@", dayStr]];
+        [dateStr appendString:[NSString stringWithFormat:@"-%@", list[2]]];
         [formatStr appendString:@"-dd"];
     }
-    if (componentCount > 3) {
+    if (count > 3) {
         //时
-        NSString *hourStr = [NSString stringWithFormat:@"%ld",[self.pickView selectedRowInComponent:3]];
-        [dateStr appendString:[NSString stringWithFormat:@" %@", hourStr]];
+        [dateStr appendString:[NSString stringWithFormat:@" %@", list[3]]];
         [formatStr appendString:@" HH"];
     }
-    if (componentCount > 4) {
+    if (count > 4) {
         //分
-        NSString *minuteStr = [NSString stringWithFormat:@"%ld",[self.pickView selectedRowInComponent:4]];
-        [dateStr appendString:[NSString stringWithFormat:@":%@", minuteStr]];
+        [dateStr appendString:[NSString stringWithFormat:@":%@", list[4]]];
         [formatStr appendString:@":mm"];
     }
 
@@ -310,17 +303,6 @@ static CGFloat const YOffset = 50;
         _contentView.backgroundColor = [UIColor whiteColor];
     }
     return _contentView;
-}
-
-- (void)setDelegate:(id<YHTDateDataSource>)delegate {
-
-    _delegate = delegate;
-    //协议实现情况判断
-    _delegateFlags.yearFlag = [delegate respondsToSelector:@selector(getYearListWithMinDate:maxDate:)];
-    _delegateFlags.monthFlag = [delegate respondsToSelector:@selector(getMonthListWithDate:)];
-    _delegateFlags.dayFlag = [delegate respondsToSelector:@selector(getDayListWithDate:)];
-    _delegateFlags.hourFlag = [delegate respondsToSelector:@selector(getHourListWithDate:)];
-    _delegateFlags.minuteFlag = [delegate respondsToSelector:@selector(getMinuteListWithDate:)];
 }
 
 @end

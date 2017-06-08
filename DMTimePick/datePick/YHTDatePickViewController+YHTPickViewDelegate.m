@@ -7,6 +7,7 @@
 //
 
 #import "YHTDatePickViewController+YHTPickViewDelegate.h"
+#import "YHTDateCalculate.h"
 
 @interface YHTDatePickViewController ()
 
@@ -27,19 +28,19 @@
     NSUInteger count = 0;
     switch (component) {
         case 0:
-            count = [[self yearList] count];
+            count = [self getYearList].length;
             break;
         case 1:
-            count = [[self monthList] count];
+            count = [self getMonthList].length;
             break;
         case 2:
-            count = [[self dayList] count];
+            count = [self getDayList].length;
             break;
         case 3:
-            count = [[self hourList] count];
+            count = [self getHourList].length;
             break;
         case 4:
-            count = [[self minuteList] count];
+            count = [self getMinuteList].length;
             break;
     }
     return count;
@@ -62,47 +63,25 @@
     return 44;
 }
 
-- (NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component {
-
-    NSString *title = nil;
-    switch (component) {
-        case 0:
-            title = [self yearStrWithRow:row];
-            break;
-        case 1:
-            title = [self monthStrWithRow:row];
-            break;
-        case 2:
-            title = [self dayStrWithRow:row];
-            break;
-        case 3:
-            title = [self hourStrWithRow:row];
-            break;
-        case 4:
-            title = [self minuteStrWithRow:row];
-            break;
-    }
-    return title;
-}
 - (nullable NSAttributedString *)pickerView:(UIPickerView *)pickerView attributedTitleForRow:(NSInteger)row forComponent:(NSInteger)component {
 
     NSMutableAttributedString *title = [[NSMutableAttributedString alloc] init];
     NSDictionary *attribut = @{NSFontAttributeName: [UIFont systemFontOfSize:21], NSForegroundColorAttributeName: self.tintColor};
     switch (component) {
         case 0:
-            [title appendAttributedString:[[NSAttributedString alloc] initWithString:[self yearStrWithRow:row] attributes:attribut]];
+            [title appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%ld",[self getYearList].start + row] attributes:attribut]];
             break;
         case 1:
-            [title appendAttributedString:[[NSAttributedString alloc] initWithString:[self monthStrWithRow:row] attributes:attribut]];
+            [title appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%ld",[self getMonthList].start + row] attributes:attribut]];
             break;
         case 2:
-            [title appendAttributedString:[[NSAttributedString alloc] initWithString:[self dayStrWithRow:row] attributes:attribut]];
+            [title appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%ld",[self getDayList].start + row] attributes:attribut]];
             break;
         case 3:
-            [title appendAttributedString:[[NSAttributedString alloc] initWithString:[self hourStrWithRow:row] attributes:attribut]];
+            [title appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%ld",[self getHourList].start + row] attributes:attribut]];
             break;
         case 4:
-            [title appendAttributedString:[[NSAttributedString alloc] initWithString:[self minuteStrWithRow:row] attributes:attribut]];
+            [title appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%ld",[self getMinuteList].start + row] attributes:attribut]];
             break;
     }
     return title;
@@ -123,159 +102,97 @@
 - (void)setDefaultSelectDate {
 
     //断言判断：当前时间不能小于设置的最小时间
-    NSAssert([self dateCompare], @"当前时间不能小于最小时间!!");
+    NSAssert([self dateCompare], @"当前时间不能小于最小时间且不能大于最大时间!!");
     NSCalendar *calendar = [NSCalendar currentCalendar];
     NSDateComponents *components = [calendar components:NSCalendarUnitYear|NSCalendarUnitMonth|NSCalendarUnitDay|NSCalendarUnitHour|NSCalendarUnitMinute fromDate:self.currentDate];
-    NSUInteger yearIndex = [[self yearList] indexOfObject:[NSString stringWithFormat:@"%ld",components.year]];
-    NSUInteger monthIndex = [[self monthList] indexOfObject:[NSString stringWithFormat:@"%ld",components.month]];
-    NSUInteger dayIndex = [[self dayList] indexOfObject:[NSString stringWithFormat:@"%ld",components.day]];
-    NSUInteger hourIndex = [[self hourList] indexOfObject:[NSString stringWithFormat:@"%ld",components.hour]];
-    NSUInteger minuteIndex = [[self minuteList] indexOfObject:[NSString stringWithFormat:@"%ld",components.minute]];
-    UIPickerView *pickView = [self valueForKey:@"pickView"];
-    if (!pickView) {
-        return;
-    }
+    UIPickerView *pickView = [self getPickerView];
     //设置默认选中项
     NSUInteger componentCount = pickView.numberOfComponents;
+    NSInteger index;
     if (componentCount > 0) {
-        [pickView selectRow:yearIndex inComponent:0 animated:false];
+        index = components.year - [self getYearList].start;
+        [pickView selectRow:index inComponent:0 animated:false];
     }
     if (componentCount > 1) {
-        [pickView selectRow:monthIndex inComponent:1 animated:false];
+        index = components.month - [self getMonthList].start;
+        [pickView selectRow:index inComponent:1 animated:false];
     }
     if (componentCount > 2) {
-        [pickView selectRow:dayIndex inComponent:2 animated:false];
+        index = components.day - [self getDayList].start;
+        [pickView selectRow:index inComponent:2 animated:false];
+        //解决异步bug，会导致天数不正常
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.25 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [pickView reloadComponent:2];
+        });
     }
     if (componentCount > 3) {
-        [pickView selectRow:hourIndex inComponent:3 animated:false];
+        index = components.hour - [self getHourList].start;
+        [pickView selectRow:index inComponent:3 animated:false];
     }
     if (componentCount > 4) {
-        [pickView selectRow:minuteIndex inComponent:4 animated:false];
+        index = components.minute - [self getMinuteList].start;
+        [pickView selectRow:index inComponent:4 animated:false];
     }
+}
+
+- (NSArray *)getSelectItem {
+
+    UIPickerView *picker = [self getPickerView];
+    NSUInteger componentCount = picker.numberOfComponents;
+    NSString *year, *month, *day, *hour, *minute;
+    NSMutableArray *list = [NSMutableArray array];
+    if (componentCount > 0) {
+        year = [NSString stringWithFormat:@"%ld",[picker selectedRowInComponent:0] + [self getYearList].start];
+        [list addObject:year];
+    }
+    if (componentCount > 1) {
+        month = [NSString stringWithFormat:@"%ld",[picker selectedRowInComponent:1] + [self getMonthList].start];
+        [list addObject:month];
+    }
+    if (componentCount > 2) {
+        day = [NSString stringWithFormat:@"%ld", [picker selectedRowInComponent:2] + [self getDayList].start];
+        [list addObject:day];
+    }
+    if (componentCount > 3) {
+        hour = [NSString stringWithFormat:@"%ld", [picker selectedRowInComponent:3] + [self getHourList].start];
+        [list addObject:hour];
+    }
+    if (componentCount > 4) {
+        minute = [NSString stringWithFormat:@"%ld", [picker selectedRowInComponent:4] + [self getMinuteList].start];
+        [list addObject:minute];
+    }
+    return list;
 }
 
 #pragma mark - private
 
-//--- year ---
-- (NSArray *)yearList {
+- (YHTDateScope *)getYearList {
 
-    if (_delegateFlags.yearFlag) {
-        return [self.delegate getYearListWithMinDate:self.minDate maxDate:self.maxDate];
-    } else {
-        return nil;
-    }
+    return [[self getDaterCalculate] getYearListWithMinDate:self.minDate maxDate:self.maxDate];
 }
 
-- (NSString *)yearStrWithRow:(NSUInteger)row {
+- (YHTDateScope *)getMonthList {
 
-    NSString *year = nil;
-    NSArray *yearList = [self yearList];
-    if (yearList.count > row) {
-        return yearList[row];
-    }
-    return year;
+    return [[self getDaterCalculate] getMonthListWithDate:nil type:0];
 }
 
-//--- month ---
-- (NSArray *)monthList {
+- (YHTDateScope *)getDayList {
 
-    if (_delegateFlags.monthFlag) {
-        return [self.delegate getMonthListWithDate:nil];
-    } else {
-        return nil;
-    }
+    UIPickerView *pickView = [self getPickerView];
+    NSInteger year = [pickView selectedRowInComponent:0] + [self getYearList].start;
+    NSInteger month = [pickView selectedRowInComponent:1] + [self getMonthList].start;
+    NSDate *date = [self getDateFromYear:[NSString stringWithFormat:@"%ld", year] month:[NSString stringWithFormat:@"%ld",month]];
+    return [[self getDaterCalculate] getDayListWithDate:date type:0];
 }
 
-- (NSString *)monthStrWithRow:(NSUInteger)row {
+- (YHTDateScope *)getHourList {
 
-    NSString *month = nil;
-    NSArray *monthList = [self monthList];
-    if (monthList.count > row) {
-        month = monthList[row];
-    }
-    return month;
+    return [[self getDaterCalculate] getHourListWithDate:nil type:0];
 }
 
-//--- day ---
-- (NSArray *)dayList {
+- (YHTDateScope *)getMinuteList {
 
-    UIPickerView *pickView = [self valueForKey:@"pickView"];
-    if (!pickView) {
-        return nil;
-    }
-    NSUInteger yearIndex = [pickView selectedRowInComponent:0];
-    NSUInteger monthIndex = [pickView selectedRowInComponent:1];
-    NSString *yearStr = [self yearList][yearIndex];
-    NSString *monthStr = [self monthList][monthIndex];
-    if (_delegateFlags.dayFlag) {
-        return [self.delegate getDayListWithDate:[self getDateFromYear:yearStr month:monthStr]];
-    }
-    return nil;
-}
-
-- (NSString *)dayStrWithRow:(NSUInteger)row {
-
-    NSString *day = nil;
-    NSArray *daylist = [self dayList];
-    if (daylist.count > row) {
-        day = daylist[row];
-    }
-    return day;
-}
-//--- hour ---
-- (NSArray *)hourList {
-
-    if (_delegateFlags.dayFlag) {
-        return [self.delegate getHourListWithDate:nil];
-    } else {
-        return nil;
-    }
-}
-
-- (NSString *)hourStrWithRow:(NSUInteger)row {
-
-    NSString *hour = nil;
-    NSArray *hourList = [self hourList];
-    if (hourList.count > row) {
-        hour = hourList[row];
-    }
-    return hour;
-}
-
-//--- minute ---
-
-- (NSArray *)minuteList {
-
-    if (_delegateFlags.minuteFlag) {
-        return [self.delegate getMinuteListWithDate:nil];
-    } else {
-        return nil;
-    }
-}
-
-- (NSString *)minuteStrWithRow:(NSUInteger)row {
-
-    NSString *min = nil;
-    NSArray *minList = [self minuteList];
-    if (minList.count > row) {
-        min = minList[row];
-    }
-    return min;
-}
-
-
-/**
- 计算component宽度
- 年份算2份，其余算1份，最多共6份
-
- @param count 列数
- @return CGFloat
- */
-- (CGFloat)calculateComponentsWithCount:(NSInteger)count {
-
-    UIView *contentView = (UIView *)[self valueForKey:@"contentView"];
-    CGFloat width = contentView.bounds.size.width;
-    return width/count;
+    return [[self getDaterCalculate] getMinuteListWithDate:nil type:0];
 }
 
 #pragma mark - tool
@@ -289,10 +206,10 @@
 - (NSDate *)getDateFromYear:(NSString *)year month:(NSString *)month {
 
     NSDateFormatter *formater = [[NSDateFormatter alloc] init];
-    formater.dateFormat = @"yyyy-MM";
-    return [formater dateFromString:[NSString stringWithFormat:@"%@-%@",year, month]];
+    formater.dateFormat = @"yyyy-MM HH";
+    formater.timeZone = self.timeZone;
+    return [formater dateFromString:[NSString stringWithFormat:@"%@-%@ 08",year, month]];
 }
-
 
 /**
  比较两个日期大小
@@ -301,13 +218,26 @@
  */
 - (BOOL)dateCompare {
 
-    NSTimeInterval oneTime = [self.minDate timeIntervalSince1970];
-    NSTimeInterval anotherTime = [self.currentDate timeIntervalSince1970];
-    if (anotherTime - oneTime > 0) {
+    NSTimeInterval minTime = [self.minDate timeIntervalSince1970];
+    NSTimeInterval currentTime = [self.currentDate timeIntervalSince1970];
+    NSTimeInterval maxTime = [self.maxDate timeIntervalSince1970];
+    if (currentTime - minTime >= 0 && maxTime - currentTime >= 0) {
         return true;
     } else {
         return false;
     }
+}
+
+#pragma mark - getter/setter
+
+- (UIPickerView *)getPickerView {
+
+    return [self valueForKey:@"pickView"];
+}
+
+- (YHTDateCalculate *)getDaterCalculate {
+
+    return [self valueForKey:@"dateCalculate"];
 }
 
 @end

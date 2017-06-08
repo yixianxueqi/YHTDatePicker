@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "YHTDateCalculate.h"
 
 /**
  日期选择精度
@@ -41,28 +40,17 @@ typedef NS_ENUM(NSUInteger, YHTViewType) {
 };
 
 @interface YHTDatePickViewController : UIViewController
-{
-    //用设置标志位，判断协议是否实现可选的方法
-    struct {
-        unsigned int yearFlag         :1;
-        unsigned int monthFlag        :1;
-        unsigned int dayFlag          :1;
-        unsigned int hourFlag         :1;
-        unsigned int minuteFlag       :1;
-    } _delegateFlags;
-}
+
 //时区
 @property (nonatomic, strong) NSTimeZone *timeZone;
 //最小选择时间，不设置则最小1970年
 @property (nonatomic, strong) NSDate *minDate;
 //最大选择时间，不设置则当今年份+30年
 @property (nonatomic, strong) NSDate *maxDate;
-//设置当前选择的默认时间，不设则默认此刻且大于等于最小时间
+//设置当前选择的默认时间，不设则默认此刻, 满足大于等于最小时间&&小于等于最大时间
 @property (nonatomic, strong) NSDate *currentDate;
 //设置日期选项颜色
 @property (nonatomic, strong) UIColor *tintColor;
-//设置时间代理
-@property (nonatomic, strong, readonly) id<YHTDateDataSource> delegate;
 
 /**
  禁用掉默认的初始化方法
@@ -70,7 +58,6 @@ typedef NS_ENUM(NSUInteger, YHTViewType) {
  @return nil
  */
 - (instancetype)init __attribute__((unavailable("init方法不可用，请用initWithTimeFormat:")));
-
 
 /**
  初始化控制器

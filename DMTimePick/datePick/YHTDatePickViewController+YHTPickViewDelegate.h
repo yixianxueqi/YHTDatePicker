@@ -16,4 +16,11 @@
  */
 - (void)setDefaultSelectDate;
 
+/**
+ 获取选中项
+
+ @return [String]
+ */
+- (NSArray *)getSelectItem;
+
 @end
