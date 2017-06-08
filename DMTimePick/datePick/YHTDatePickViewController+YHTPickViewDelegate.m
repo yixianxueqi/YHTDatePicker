@@ -127,6 +127,10 @@
     NSCalendar *calendar = [NSCalendar currentCalendar];
     NSDateComponents *components = [calendar components:NSCalendarUnitYear|NSCalendarUnitMonth|NSCalendarUnitDay|NSCalendarUnitHour|NSCalendarUnitMinute fromDate:self.currentDate];
     NSUInteger yearIndex = [[self yearList] indexOfObject:[NSString stringWithFormat:@"%ld",components.year]];
+    NSUInteger monthIndex = [[self monthList] indexOfObject:[NSString stringWithFormat:@"%ld",components.month]];
+    NSUInteger dayIndex = [[self dayList] indexOfObject:[NSString stringWithFormat:@"%ld",components.day]];
+    NSUInteger hourIndex = [[self hourList] indexOfObject:[NSString stringWithFormat:@"%ld",components.hour]];
+    NSUInteger minuteIndex = [[self minuteList] indexOfObject:[NSString stringWithFormat:@"%ld",components.minute]];
     UIPickerView *pickView = [self valueForKey:@"pickView"];
     if (!pickView) {
         return;
@@ -137,16 +141,16 @@
         [pickView selectRow:yearIndex inComponent:0 animated:false];
     }
     if (componentCount > 1) {
-        [pickView selectRow:(components.month - 1) inComponent:1 animated:false];
+        [pickView selectRow:monthIndex inComponent:1 animated:false];
     }
     if (componentCount > 2) {
-        [pickView selectRow:(components.day - 1) inComponent:2 animated:false];
+        [pickView selectRow:dayIndex inComponent:2 animated:false];
     }
     if (componentCount > 3) {
-        [pickView selectRow:components.hour inComponent:3 animated:false];
+        [pickView selectRow:hourIndex inComponent:3 animated:false];
     }
     if (componentCount > 4) {
-        [pickView selectRow:components.minute inComponent:4 animated:false];
+        [pickView selectRow:minuteIndex inComponent:4 animated:false];
     }
 }
 
