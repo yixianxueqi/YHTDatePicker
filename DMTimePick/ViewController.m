@@ -63,7 +63,7 @@
 //底部弹窗选择时间
 - (IBAction)clickDatePresent:(UIButton *)sender {
 
-    YHTDatePickViewController *datePickVC = [[YHTDatePickViewController alloc] initWithTimeFormat:YHTDateType_Minute];
+    YHTDatePickViewController *datePickVC = [[YHTDatePickViewController alloc] initWithTimeFormat:YHTDateType_Day];
     //配置项
     datePickVC.minDate = self.minDate;
     datePickVC.maxDate = self.maxDate;
