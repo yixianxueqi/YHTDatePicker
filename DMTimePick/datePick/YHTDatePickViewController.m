@@ -34,6 +34,8 @@ static CGFloat const YOffset = 50;
 @property (nonatomic, strong) UIView *contentView;
 @property (nonatomic, strong) YHTDateCalculate *dateCalculate;
 
+@property (nonatomic, assign) BOOL isCorrectLoad;
+
 @end
 
 @implementation YHTDatePickViewController

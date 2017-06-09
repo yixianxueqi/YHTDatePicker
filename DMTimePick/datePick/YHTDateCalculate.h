@@ -8,15 +8,6 @@
 
 #import <Foundation/Foundation.h>
 
-//类型标示符
-//向上取
-extern int const YHTMINTYEPE;
-//默认
-extern int const YHTNORMALTYPE;
-//向下取
-extern int const YHTMAXTYPE;
-
-
 @interface YHTDateScope : NSObject
 
 @property (nonatomic, assign) NSInteger start;
@@ -29,9 +20,9 @@ extern int const YHTMAXTYPE;
 @interface YHTDateCalculate : NSObject
 
 - (YHTDateScope *)getYearListWithMinDate:(NSDate *)minDate maxDate:(NSDate *)maxDate;
-- (YHTDateScope *)getMonthListWithDate:(NSDate *)date type:(NSInteger)type;
-- (YHTDateScope *)getDayListWithDate:(NSDate *)date type:(NSInteger)type;
-- (YHTDateScope *)getHourListWithDate:(NSDate *)date type:(NSInteger)type;
-- (YHTDateScope *)getMinuteListWithDate:(NSDate *)date type:(NSInteger)type;
+- (YHTDateScope *)getMonthListWithDate:(NSDate *)date;
+- (YHTDateScope *)getDayListWithDate:(NSDate *)date;
+- (YHTDateScope *)getHourListWithDate:(NSDate *)date;
+- (YHTDateScope *)getMinuteListWithDate:(NSDate *)date;
 
 @end

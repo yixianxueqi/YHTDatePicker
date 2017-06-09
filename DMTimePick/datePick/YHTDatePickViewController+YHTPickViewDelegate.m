@@ -108,6 +108,7 @@
     NSCalendar *calendar = [NSCalendar currentCalendar];
     NSDateComponents *components = [calendar components:NSCalendarUnitYear|NSCalendarUnitMonth|NSCalendarUnitDay|NSCalendarUnitHour|NSCalendarUnitMinute fromDate:date];
     UIPickerView *pickView = [self getPickerView];
+    [pickView reloadAllComponents];
     //设置默认选中项
     NSUInteger componentCount = pickView.numberOfComponents;
     NSInteger index;
@@ -120,6 +121,8 @@
         [pickView selectRow:index inComponent:1 animated:true];
     }
     if (componentCount > 2) {
+        //此处需重新获取天数
+        [pickView reloadComponent:2];
         index = components.day - [self getDayList].start;
         [pickView selectRow:index inComponent:2 animated:true];
     }
@@ -131,9 +134,9 @@
         index = components.minute - [self getMinuteList].start;
         [pickView selectRow:index inComponent:4 animated:true];
     }
-    //解决异步Bug,延时重刷
+    //解决异步Bug
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.25 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [pickView reloadAllComponents];
+        [self setPickerIsCorrectLoad:true];
     });
 }
 
@@ -177,26 +180,31 @@
 
 - (YHTDateScope *)getMonthList {
 
-    return [[self getDaterCalculate] getMonthListWithDate:nil type:0];
+    return [[self getDaterCalculate] getMonthListWithDate:nil];
 }
 
 - (YHTDateScope *)getDayList {
 
-    UIPickerView *pickView = [self getPickerView];
-    NSInteger year = [pickView selectedRowInComponent:0] + [self getYearList].start;
-    NSInteger month = [pickView selectedRowInComponent:1] + [self getMonthList].start;
-    NSDate *date = [self getDateFromYear:[NSString stringWithFormat:@"%ld", year] month:[NSString stringWithFormat:@"%ld",month]];
-    return [[self getDaterCalculate] getDayListWithDate:date type:0];
+    NSDate *date;
+    if (![self getPickerCorrectLoad]) {
+        date = self.currentDate;
+    } else {
+        UIPickerView *pickView = [self getPickerView];
+        NSInteger year = [pickView selectedRowInComponent:0] + [self getYearList].start;
+        NSInteger month = [pickView selectedRowInComponent:1] + [self getMonthList].start;
+        date = [self getDateFromYear:[NSString stringWithFormat:@"%ld", year] month:[NSString stringWithFormat:@"%ld",month]];
+    }
+    return [[self getDaterCalculate] getDayListWithDate:date];
 }
 
 - (YHTDateScope *)getHourList {
 
-    return [[self getDaterCalculate] getHourListWithDate:nil type:0];
+    return [[self getDaterCalculate] getHourListWithDate:nil];
 }
 
 - (YHTDateScope *)getMinuteList {
 
-    return [[self getDaterCalculate] getMinuteListWithDate:nil type:0];
+    return [[self getDaterCalculate] getMinuteListWithDate:nil];
 }
 
 - (void)checkDateAndAutoCorrect {
@@ -212,6 +220,7 @@
         //大于最大范围
         [self setDefaultSelectDate:self.maxDate];
     }
+
 }
 
 #pragma mark - tool
@@ -257,6 +266,16 @@
 - (YHTDateCalculate *)getDaterCalculate {
 
     return [self valueForKey:@"dateCalculate"];
+}
+
+- (BOOL)getPickerCorrectLoad {
+
+    return [[self valueForKey:@"isCorrectLoad"] boolValue];
+}
+
+- (void)setPickerIsCorrectLoad:(BOOL)flag {
+
+    [self setValue:@(flag) forKey:@"isCorrectLoad"];
 }
 
 @end
