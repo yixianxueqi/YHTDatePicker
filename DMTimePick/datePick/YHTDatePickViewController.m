@@ -15,7 +15,7 @@ static NSTimeInterval const Day_Seconds = 86400;
 //未来30年的天数
 static NSTimeInterval const Default_Future_Year = 10957;
 //视图比例
-static CGFloat const Scale = 0.8;
+static CGFloat const Scale = 0.85;
 //视图容器在垂直方向的偏移量
 static CGFloat const YOffset = 50;
 
@@ -111,13 +111,13 @@ static CGFloat const YOffset = 50;
 
     self.view.backgroundColor = [[UIColor clearColor] colorWithAlphaComponent:0.3];
     [self deployAlertContentView];
-    self.pickView.frame = CGRectMake(0, 0, self.contentView.bounds.size.width, self.contentView.bounds.size.height * Scale);
+    self.pickView.frame = CGRectMake(0, 0, self.contentView.bounds.size.width, self.contentView.bounds.size.height * 0.8);
     //按钮
     UIButton *cancelBtn = [self quickGetButtonWith:@"取 消" color:[UIColor redColor] selector:@selector(cancelBtnClick:)];
     UIButton *chooseBtn = [self quickGetButtonWith:@"确 认" color:RGBA(28, 162, 248, 1) selector:@selector(chooseBtnClick:)];
     [self.contentView addSubview:cancelBtn];
     [self.contentView addSubview:chooseBtn];
-    CGFloat btnHeight = self.contentView.bounds.size.height * (1 - Scale);
+    CGFloat btnHeight = self.contentView.bounds.size.height * 0.2;
     CGFloat btnWidth = self.contentView.bounds.size.width * 0.5;
     CGFloat btnY = self.contentView.bounds.size.height - btnHeight;
     cancelBtn.frame = CGRectMake(0, btnY, btnWidth, btnHeight);
@@ -262,6 +262,7 @@ static CGFloat const YOffset = 50;
         _pickView = [[UIPickerView alloc] init];
         _pickView.delegate = self;
         _pickView.dataSource = self;
+        [_pickView sizeToFit];
     }
     return _pickView;
 }
