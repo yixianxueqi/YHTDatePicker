@@ -14,13 +14,13 @@
 /**
  设置默认选中的日期
  */
-- (void)setDefaultSelectDate;
+- (void)setDefaultSelectDate:(NSDate *)date;
 
 /**
- 获取选中项
+ 获取选中日期
 
  @return [String]
  */
-- (NSArray *)getSelectItem;
+- (NSDate *)getSelectItem;
 
 @end

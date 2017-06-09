@@ -97,7 +97,7 @@ static CGFloat const YOffset = 50;
     } else {
         [self presentShow];
     }
-    [self setDefaultSelectDate];
+    [self setDefaultSelectDate:self.currentDate];
 }
 
 #pragma mark - private
@@ -206,41 +206,8 @@ static CGFloat const YOffset = 50;
  */
 - (void)chooseBtnClick:(UIButton *)btn {
 
-    NSMutableString *dateStr = [NSMutableString string];
-    NSMutableString *formatStr = [NSMutableString string];
-    NSArray *list = [self getSelectItem];
-    NSInteger count = list.count;
-    //此处根据选择拼接日期字符串，然后转化为NSDate对象
-    if (count > 0) {
-        //年
-        [dateStr appendString:list[0]];
-        [formatStr appendString:@"yyyy"];
-    }
-    if (count > 1) {
-        //月
-        [dateStr appendString:[NSString stringWithFormat:@"-%@", list[1]]];
-        [formatStr appendString:@"-MM"];
-    }
-    if (count > 2) {
-        //日
-        [dateStr appendString:[NSString stringWithFormat:@"-%@", list[2]]];
-        [formatStr appendString:@"-dd"];
-    }
-    if (count > 3) {
-        //时
-        [dateStr appendString:[NSString stringWithFormat:@" %@", list[3]]];
-        [formatStr appendString:@" HH"];
-    }
-    if (count > 4) {
-        //分
-        [dateStr appendString:[NSString stringWithFormat:@":%@", list[4]]];
-        [formatStr appendString:@":mm"];
-    }
-
-    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-    formatter.dateFormat = formatStr;
     if (self.completionBlock) {
-        self.completionBlock([formatter dateFromString:dateStr]);
+        self.completionBlock([self getSelectItem]);
     }
     [self hide];
 }

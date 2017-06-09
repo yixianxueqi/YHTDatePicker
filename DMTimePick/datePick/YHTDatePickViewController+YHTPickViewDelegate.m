@@ -93,75 +93,79 @@
         //更新年份或者月份，重新刷新天 && 存在天选择
         [pickerView reloadComponent:2];
     }
+    //检验时间是否超出范围
+    [self checkDateAndAutoCorrect];
 }
 
 #pragma mark - public
 /**
  设置默认选中的日期
  */
-- (void)setDefaultSelectDate {
+- (void)setDefaultSelectDate:(NSDate *)date {
 
     //断言判断：当前时间不能小于设置的最小时间
     NSAssert([self dateCompare], @"当前时间不能小于最小时间且不能大于最大时间!!");
     NSCalendar *calendar = [NSCalendar currentCalendar];
-    NSDateComponents *components = [calendar components:NSCalendarUnitYear|NSCalendarUnitMonth|NSCalendarUnitDay|NSCalendarUnitHour|NSCalendarUnitMinute fromDate:self.currentDate];
+    NSDateComponents *components = [calendar components:NSCalendarUnitYear|NSCalendarUnitMonth|NSCalendarUnitDay|NSCalendarUnitHour|NSCalendarUnitMinute fromDate:date];
     UIPickerView *pickView = [self getPickerView];
     //设置默认选中项
     NSUInteger componentCount = pickView.numberOfComponents;
     NSInteger index;
     if (componentCount > 0) {
         index = components.year - [self getYearList].start;
-        [pickView selectRow:index inComponent:0 animated:false];
+        [pickView selectRow:index inComponent:0 animated:true];
     }
     if (componentCount > 1) {
         index = components.month - [self getMonthList].start;
-        [pickView selectRow:index inComponent:1 animated:false];
+        [pickView selectRow:index inComponent:1 animated:true];
     }
     if (componentCount > 2) {
         index = components.day - [self getDayList].start;
-        [pickView selectRow:index inComponent:2 animated:false];
-        //解决异步bug，会导致天数不正常
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.25 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [pickView reloadComponent:2];
-        });
+        [pickView selectRow:index inComponent:2 animated:true];
     }
     if (componentCount > 3) {
         index = components.hour - [self getHourList].start;
-        [pickView selectRow:index inComponent:3 animated:false];
+        [pickView selectRow:index inComponent:3 animated:true];
     }
     if (componentCount > 4) {
         index = components.minute - [self getMinuteList].start;
-        [pickView selectRow:index inComponent:4 animated:false];
+        [pickView selectRow:index inComponent:4 animated:true];
     }
+    //解决异步Bug,延时重刷
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.25 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [pickView reloadAllComponents];
+    });
 }
 
-- (NSArray *)getSelectItem {
+- (NSDate *)getSelectItem {
 
     UIPickerView *picker = [self getPickerView];
     NSUInteger componentCount = picker.numberOfComponents;
-    NSString *year, *month, *day, *hour, *minute;
-    NSMutableArray *list = [NSMutableArray array];
+    NSMutableString *dateStr = [NSMutableString string];
+    NSMutableString *formatStr = [NSMutableString string];
     if (componentCount > 0) {
-        year = [NSString stringWithFormat:@"%ld",[picker selectedRowInComponent:0] + [self getYearList].start];
-        [list addObject:year];
+        [dateStr appendString:[NSString stringWithFormat:@"%ld",[picker selectedRowInComponent:0] + [self getYearList].start]];
+        [formatStr appendString:@"yyyy"];
     }
     if (componentCount > 1) {
-        month = [NSString stringWithFormat:@"%ld",[picker selectedRowInComponent:1] + [self getMonthList].start];
-        [list addObject:month];
+        [dateStr appendString:[NSString stringWithFormat:@"-%ld",[picker selectedRowInComponent:1] + [self getMonthList].start]];
+        [formatStr appendString:@"-MM"];
     }
     if (componentCount > 2) {
-        day = [NSString stringWithFormat:@"%ld", [picker selectedRowInComponent:2] + [self getDayList].start];
-        [list addObject:day];
+        [dateStr appendString:[NSString stringWithFormat:@"-%ld", [picker selectedRowInComponent:2] + [self getDayList].start]];
+        [formatStr appendString:@"-dd"];
     }
     if (componentCount > 3) {
-        hour = [NSString stringWithFormat:@"%ld", [picker selectedRowInComponent:3] + [self getHourList].start];
-        [list addObject:hour];
+        [dateStr appendString:[NSString stringWithFormat:@" %ld", [picker selectedRowInComponent:3] + [self getHourList].start]];
+        [formatStr appendString:@" HH"];
     }
     if (componentCount > 4) {
-        minute = [NSString stringWithFormat:@"%ld", [picker selectedRowInComponent:4] + [self getMinuteList].start];
-        [list addObject:minute];
+        [dateStr appendString:[NSString stringWithFormat:@":%ld", [picker selectedRowInComponent:4] + [self getMinuteList].start]];
+        [formatStr appendString:@":mm"];
     }
-    return list;
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    formatter.dateFormat = formatStr;
+    return [formatter dateFromString:dateStr];
 }
 
 #pragma mark - private
@@ -195,6 +199,21 @@
     return [[self getDaterCalculate] getMinuteListWithDate:nil type:0];
 }
 
+- (void)checkDateAndAutoCorrect {
+
+    NSTimeInterval minTime = [self.minDate timeIntervalSince1970];
+    NSTimeInterval currentTime = [[self getSelectItem] timeIntervalSince1970];
+    NSTimeInterval maxTime = [self.maxDate timeIntervalSince1970];
+    if (currentTime - minTime < 0) {
+        //小于最小范围
+        [self setDefaultSelectDate:self.minDate];
+    }
+    if (currentTime - maxTime > 0) {
+        //大于最大范围
+        [self setDefaultSelectDate:self.maxDate];
+    }
+}
+
 #pragma mark - tool
 /**
  获取日期对象
@@ -212,7 +231,7 @@
 }
 
 /**
- 比较两个日期大小
+ 比较日期是否符合范围
 
  @return BOOl
  */
