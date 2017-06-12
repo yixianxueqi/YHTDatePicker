@@ -2,4 +2,4 @@ language: objective-c
 osx_image: xcode8.2
 script:
 - xcodebuild clean -project YHTDatePicker.xcodeproj -scheme YHTDatePicker -configuration Debug -sdk iphoneos
-- xcodebuild -project YHDevelopFramework.xcodeproj -scheme YHTDatePicker -sdk iphonesimulator ONLY_ACTIVE_ARCH=NO
+- xcodebuild -project YHTDatePicker.xcodeproj -scheme YHTDatePicker -sdk iphonesimulator ONLY_ACTIVE_ARCH=NO
