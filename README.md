@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/yixianxueqi/YHTDatePicker.svg?branch=master)](https://travis-ci.org/yixianxueqi/YHTDatePicker)
+
 # YHTDatePicker
 
 ## 这是一个简单的日期选择空间，支持中心弹窗和底部弹出两种方式。
