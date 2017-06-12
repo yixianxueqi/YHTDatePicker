@@ -2,11 +2,9 @@
 
 ## 这是一个简单的日期选择空间，支持中心弹窗和底部弹出两种方式。
 
-### 效果1
-![image](./gif/1.gif)
-
-### 效果2
-![](./gif/2.gif)
+### 效果
+<img src="./gif/1.gif" width="320" height="568" style="float: left;">
+<img src="./gif/2.gif" width="320" height="568" style="float: left;">
 
 ### 使用：
 
