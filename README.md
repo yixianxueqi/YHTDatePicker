@@ -57,4 +57,14 @@ parentViewController应该填写要展示在的控制器上
 详情可见示例。
 
 
+### 安装
+
+1. 直接将datePicker文件夹拖入项目使用
+2. coopods安装
+
+```
+pod 'YHTDatePicker', '~> 0.0.1'
+```
+
+
 
