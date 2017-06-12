@@ -79,7 +79,7 @@ Pod::Spec.new do |s|
   #  Supports git, hg, bzr, svn and HTTP.
   #
 
-  s.source       = { :git => "https://github.com/yixianxueqi/YHTDatePicker.git", :tag => "0.0.1" }
+  s.source       = { :git => "https://github.com/yixianxueqi/YHTDatePicker.git", :tag => "0.0.2" }
 
 
   # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
@@ -90,7 +90,7 @@ Pod::Spec.new do |s|
   #  Not including the public_header_files will make all headers public.
   #
 
-  s.source_files  = "YHTDatePicker", "YHTDatePicker/datePicker/*.{h,m}"
+  s.source_files  = "YHTDatePicker/datePicker/*.{h,m}"
   # s.exclude_files = "Classes/Exclude"
 
   # s.public_header_files = "Classes/**/*.h"
