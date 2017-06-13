@@ -2,7 +2,7 @@
 
 # YHTDatePicker
 
-## 这是一个简单的日期选择空间，支持中心弹窗和底部弹出两种方式。
+## 这是一个简单的日期选择控件，支持中心弹窗和底部弹出两种方式。
 
 ### 效果
 <img src="./gif/1.gif" width="320" height="568" style="display: inline-block;float: left;"> <img src="./gif/2.gif" width="320" height="568" style="display: inline-block;float: right;">
