@@ -45,7 +45,7 @@ parentViewController应该填写要展示在的控制器上
 
 注意： 
 
-该时间选择器底部弹窗时，不论是否包含tabbar都可以正常展示，若不能展示，请查看要展现在的控制器的以下连个个属性：
+该时间选择器底部弹窗时，不论是否包含tabbar都可以正常展示，若不能展示，请查看要展现在的控制器的以下两个属性：
 
 ```
     self.automaticallyAdjustsScrollViewInsets = false;
@@ -60,7 +60,7 @@ parentViewController应该填写要展示在的控制器上
 ### 安装
 
 1. 直接将datePicker文件夹拖入项目使用
-2. coopods安装
+2. cocopods安装
 
 ```
 pod 'YHTDatePicker', '~> 0.0.1'
